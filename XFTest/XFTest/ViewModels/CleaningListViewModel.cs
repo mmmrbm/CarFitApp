@@ -5,21 +5,21 @@ using XFTest.Models;
 using Prism.Mvvm;
 using Prism.Navigation;
 using Prism.Services.Dialogs;
-using XFTest.Services;
+using XFTest.DataServices;
 
 namespace XFTest.ViewModels
 {
 	public class CleaningListViewModel : BindableBase, INotifyPropertyChanged
     {
-        readonly IList<CleaningList> source;
+        readonly IList<CleaningListJobItem> source;
 
-        public ObservableCollection<CleaningList> CleaningTasks { get; private set; }
+        public ObservableCollection<CleaningListJobItem> CleaningTasks { get; private set; }
 
 
         public CleaningListViewModel( 
             IDialogService dialogService, 
             INavigationService navigationService,
-            IDataService<CleaningList> cleaningListDataService)
+            IDataService<CleaningListJobItem> cleaningListDataService)
         {
             source = cleaningListDataService.FetchDataForEntityAsync().Result;
             PopulateCleaningTaskList();
@@ -27,7 +27,7 @@ namespace XFTest.ViewModels
 
         void PopulateCleaningTaskList()
         {
-            CleaningTasks = new ObservableCollection<CleaningList>(source);
+            CleaningTasks = new ObservableCollection<CleaningListJobItem>(source);
         }
     }
 }

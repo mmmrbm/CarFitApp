@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace XFTest.Services.MappingService
+namespace XFTest.Services.DataMappingServices
 {
 	public interface IEntityListMappingService<Source, Target>
 	{

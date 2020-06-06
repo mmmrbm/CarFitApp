@@ -4,9 +4,11 @@ using XFTest.ViewModels;
 using XFTest.Views;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
-using XFTest.Services;
+using XFTest.DataServices;
 using XFTest.Dtos;
-using XFTest.Services.MappingService;
+using XFTest.Services.DataMappingServices;
+using XFTest.Services.LocationServices;
+using XFTest.Util;
 
 [assembly: XamlCompilation(XamlCompilationOptions.Compile)]
 namespace XFTest
@@ -34,9 +36,13 @@ namespace XFTest
             containerRegistry.RegisterForNavigation<NavigationPage>();
             containerRegistry.RegisterForNavigation<MainPage, MainPageViewModel>();
 
-            containerRegistry.Register<IDataService<XFTest.Models.CleaningList>, CleaningListDataService>();
+            containerRegistry.Register<IDataService<XFTest.Models.CleaningListJobItem>, CleaningListDataService>();
             containerRegistry.Register<IDataService<CarFitClientDto>, CarFitClientDataService>();
-            containerRegistry.Register<IEntityListMappingService<CarFitClientDto, XFTest.Models.CleaningList>, CarFitClientListCleaningListMappingService>();
+            containerRegistry.Register<IEntityListMappingService<CarFitClientDto, XFTest.Models.CleaningListJobItem>, CarFitClientListCleaningListMappingService>();
+
+            containerRegistry.Register<IDistanceCalculationService, LongLatDistanceCalculationService>();
+
+            containerRegistry.Register<DataConvertHelper>();
         }
     }
 }

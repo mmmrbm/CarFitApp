@@ -59,8 +59,8 @@
                     HeightRequest="40">
                     <Button
                         x:Name="ButtonStyle"
-                        BackgroundColor="#4E77D6"
-                        Text="TODO"
+                        BackgroundColor="{Binding JobBackgroundColor}"
+                        Text="{Binding JobStatus}"
                         FontFamily="{StaticResource BoldFont}"
                         Style="{StaticResource buttonStyleList}" />
                 </yummy:PancakeView>

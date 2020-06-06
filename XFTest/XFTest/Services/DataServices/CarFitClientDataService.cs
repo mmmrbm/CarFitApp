@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using XFTest.Dtos;
 using XFTest.Views;
 
-namespace XFTest.Services
+namespace XFTest.DataServices
 {
 	/**
 	 * Class is marked as internal. All invocations should be handled via <see cref="CleaningListDataService"/>
