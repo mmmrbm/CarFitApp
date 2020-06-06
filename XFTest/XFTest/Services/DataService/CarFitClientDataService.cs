@@ -3,19 +3,24 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
+using System.Threading.Tasks;
 using XFTest.Dtos;
 using XFTest.Views;
 
 namespace XFTest.Services
 {
-	internal class FetchDataService
+	/**
+	 * Class is marked as internal. All invocations should be handled via <see cref="CleaningListDataService"/>
+	 * Data reads can use complex and low level methods. Idea is to hide the complexity via a mediator.
+	 */
+	internal class CarFitClientDataService : IDataService<CarFitClientDto>
 	{
 		/**
 		 * Below code is based on the solutions and information provided on below discussions.
 		 * https://stackoverflow.com/questions/60878223/xamarin-forms-read-local-json-file-and-display-in-picker
 		 * https://stackoverflow.com/questions/38762368/embedded-resource-in-net-core-libraries
 		 */
-		internal List<CarFitClientDto> FetchClientData()
+		public async Task<List<CarFitClientDto>> FetchDataForEntityAsync()
 		{
 			CarFitResponseDto response = null;
 			List<CarFitClientDto> carFitClients = null;
@@ -30,13 +35,12 @@ namespace XFTest.Services
 
 					using (var reader = new StreamReader(stream))
 					{
-						string data = reader.ReadToEnd();
-						Console.WriteLine(data);
+						string data = await reader.ReadToEndAsync();
 						response = JsonConvert.DeserializeObject<CarFitResponseDto>(data);
 
 						if (response == null)
 						{
-							throw new JsonException("Bad JSON response from Server.");
+							throw new JsonException("Couldn't parse JSON response from Server.");
 						}
 
 						carFitClients = response.Clients;

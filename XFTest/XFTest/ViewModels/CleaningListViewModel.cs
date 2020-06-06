@@ -5,6 +5,7 @@ using XFTest.Models;
 using Prism.Mvvm;
 using Prism.Navigation;
 using Prism.Services.Dialogs;
+using XFTest.Services;
 
 namespace XFTest.ViewModels
 {
@@ -12,47 +13,21 @@ namespace XFTest.ViewModels
     {
         readonly IList<CleaningList> source;
 
-        public ObservableCollection<CleaningList> Monkeys { get; private set; }
+        public ObservableCollection<CleaningList> CleaningTasks { get; private set; }
 
 
-        public CleaningListViewModel( IDialogService dialogService, INavigationService navigationService)
+        public CleaningListViewModel( 
+            IDialogService dialogService, 
+            INavigationService navigationService,
+            IDataService<CleaningList> cleaningListDataService)
         {
-            source = new List<CleaningList>();
-            CreateMonkeyCollection();
+            source = cleaningListDataService.FetchDataForEntityAsync().Result;
+            PopulateCleaningTaskList();
         }
 
-        void CreateMonkeyCollection()
+        void PopulateCleaningTaskList()
         {
-            source.Add(new CleaningList
-            {
-                Name = "Wash1",
-
-            });
-
-            source.Add(new CleaningList
-            {
-                Name = "Wash2",
-
-            });
-
-            source.Add(new CleaningList
-            {
-                Name = "Wash3",
-
-            });
-
-            source.Add(new CleaningList
-            {
-                Name = "Wash4",
-
-            });
-
-            source.Add(new CleaningList
-            {
-                Name = "Wash5",
-            });
-
-            Monkeys = new ObservableCollection<CleaningList>(source);
+            CleaningTasks = new ObservableCollection<CleaningList>(source);
         }
     }
 }
