@@ -44,6 +44,10 @@
                 </ffimageloadingsvg:SvgCachedImage>
 
             </Grid>
+
+			<!-- Based on the elegant solution provided at https://devblogs.microsoft.com/xamarin/refreshview-xamarin-forms/ -->
+			<RefreshView IsRefreshing="{Binding IsRefreshing, Mode=OneWay}" Command="{Binding RefreshCommand}">
+				
 			<CollectionView ItemsSource="{Binding CleaningTasks}" Margin="20,20,20,20">
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
@@ -123,8 +127,8 @@
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
             </CollectionView>
-
-        </StackLayout>
+			</RefreshView>
+		</StackLayout>
     </ContentPage.Content>
 
 </ContentPage>

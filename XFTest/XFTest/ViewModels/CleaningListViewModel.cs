@@ -6,28 +6,85 @@ using Prism.Mvvm;
 using Prism.Navigation;
 using Prism.Services.Dialogs;
 using XFTest.DataServices;
+using Prism.Commands;
+using System;
 
 namespace XFTest.ViewModels
 {
 	public class CleaningListViewModel : BindableBase, INotifyPropertyChanged
     {
-        readonly IList<CleaningListJobItem> source;
+        private IList<CleaningListJobItem> source;
 
-        public ObservableCollection<CleaningListJobItem> CleaningTasks { get; private set; }
+        private IDataService<CleaningListJobItem> _cleaningListDataService;
 
+        private ObservableCollection<CleaningListJobItem> _cleaningTasks;
+
+        public ObservableCollection<CleaningListJobItem> CleaningTasks
+        {
+            get { return _cleaningTasks; }
+            set { SetProperty(ref _cleaningTasks, value); }
+        }
+
+        /**
+         * Refresh command handling logic is based on the elegant solution provided at
+         * https://devblogs.microsoft.com/xamarin/refreshview-xamarin-forms/
+         */
+        public DelegateCommand RefreshCommand { get; set; }
+
+        private bool _isRefreshing;
+
+        public bool IsRefreshing
+        {
+            get { return _isRefreshing; }
+            set { SetProperty(ref _isRefreshing, value); }
+        }
 
         public CleaningListViewModel( 
             IDialogService dialogService, 
             INavigationService navigationService,
             IDataService<CleaningListJobItem> cleaningListDataService)
         {
-            source = cleaningListDataService.FetchDataForEntityAsync().Result;
+            _cleaningListDataService = cleaningListDataService;
+            RefreshCommand = new DelegateCommand(RefreshCommandHandler);
+
             PopulateCleaningTaskList();
         }
 
-        void PopulateCleaningTaskList()
-        {
+		private void RefreshCommandHandler()
+		{
+            if (IsRefreshing)
+            {
+                return;
+            }
+
+            // In production environment below method will be invoked
+            // PopulateCleaningTaskList()
+            // But, for this excercise, developed below logic to add a dummy object to list
+
+            IsRefreshing = true;
+
+            CleaningListJobItem dummyJobItem = new CleaningListJobItem()
+            {
+                ClientName = "Dummy Dummy",
+                ClientAddressInformation = "Dummy Street, Dummy City, Dummy ZIP",
+                DistanceInformation = "Dummy km",
+                JobDescription = "Dummy Work",
+                JobStatus = "Dummy",
+                JobBackgroundColor = "#FF6347"
+            };
+
+            source.Add(dummyJobItem);
             CleaningTasks = new ObservableCollection<CleaningListJobItem>(source);
+
+            IsRefreshing = false;
+        }
+
+		void PopulateCleaningTaskList()
+        {
+            IsRefreshing = true;
+            source = _cleaningListDataService.FetchDataForEntityAsync().Result;
+            CleaningTasks = new ObservableCollection<CleaningListJobItem>(source);
+            IsRefreshing = false;
         }
     }
 }
