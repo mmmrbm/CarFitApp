@@ -2,6 +2,9 @@
 
 namespace XFTest.Models
 {
+	/// <summary>
+	/// The business object which depicts the nature and information of a car wash job item.
+	/// </summary>
     public class CleaningListJobItem
     {
         public string ClientName { get; set; }

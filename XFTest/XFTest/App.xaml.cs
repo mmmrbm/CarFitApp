@@ -38,13 +38,13 @@ namespace XFTest
             containerRegistry.RegisterForNavigation<MainPage, MainPageViewModel>();
             containerRegistry.RegisterForNavigation<Calendar, CalendarWidgetViewModel>();
 
-            containerRegistry.Register<IDataService<XFTest.Models.CleaningListJobItem>, CleaningListDataService>();
-            containerRegistry.Register<IDataService<CarFitClientDto>, CarFitClientDataService>();
+            containerRegistry.Register<IDataFetchService<XFTest.Models.CleaningListJobItem>, CleaningListDataService>();
+            containerRegistry.Register<IDataFetchService<CarFitClientDto>, CarFitClientDataService>();
             containerRegistry.Register<IEntityListMappingService<CarFitClientDto, XFTest.Models.CleaningListJobItem>, CarFitClientListCleaningListMappingService>();
 
             containerRegistry.Register<IDistanceCalculationService, LongLatDistanceCalculationService>();
 
-            containerRegistry.Register<DataConvertHelper>();
+            containerRegistry.Register<CarFitClientCleaningListJobItemDataConvertHelper>();
         }
     }
 }

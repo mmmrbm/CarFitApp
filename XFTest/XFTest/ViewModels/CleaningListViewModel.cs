@@ -8,8 +8,6 @@ using Prism.Services.Dialogs;
 using XFTest.DataServices;
 using Prism.Commands;
 using System;
-using XFTest.Views;
-using Xamarin.Forms;
 using Prism.Events;
 using System.Linq;
 
@@ -17,35 +15,20 @@ namespace XFTest.ViewModels
 {
 	public class CleaningListViewModel : BindableBase, INotifyPropertyChanged
     {
-        private IList<CleaningListJobItem> source;
+		#region Private Members
+		private IList<CleaningListJobItem> source;
 
-        private IDataService<CleaningListJobItem> _cleaningListDataService;
+        private IDataFetchService<CleaningListJobItem> _cleaningListDataService;
 
         private IDialogService _dialogService;
 
         private INavigationService _navigationService;
 
         private IEventAggregator _eventAggregator;
+		#endregion
 
-        private ObservableCollection<CleaningListJobItem> _cleaningTasks;
-
-        public ObservableCollection<CleaningListJobItem> CleaningTasks
-        {
-            get { return _cleaningTasks; }
-            set { SetProperty(ref _cleaningTasks, value); }
-        }
-
-        /**
-         * Refresh command handling logic is based on the elegant solution provided at
-         * https://devblogs.microsoft.com/xamarin/refreshview-xamarin-forms/
-         */
-        public DelegateCommand RefreshCommand { get; set; }
-
-        public DelegateCommand ShowCalendarCommand { get; set; }
-
-        public DelegateCommand HideCalendarCommand { get; set; }
-
-        private bool _isRefreshing;
+		#region Properties
+		private bool _isRefreshing;
 
         public bool IsRefreshing
         {
@@ -69,24 +52,47 @@ namespace XFTest.ViewModels
             set { SetProperty(ref _shouldTitleSectionVisible, value); }
         }
 
-		private DateTime _userSelectedDate;
+        private DateTime _userSelectedDate;
 
-		public DateTime UserSelectedDate
+        public DateTime UserSelectedDate
         {
-			get { return _userSelectedDate; }
-			set 
-            { 
+            get { return _userSelectedDate; }
+            set
+            {
                 SetProperty(ref _userSelectedDate, value);
                 ModifyListOnUserSelectedDate();
             }
-		}
+        }
 
+        private ObservableCollection<CleaningListJobItem> _cleaningTasks;
 
-		public CleaningListViewModel( 
+        public ObservableCollection<CleaningListJobItem> CleaningTasks
+        {
+            get { return _cleaningTasks; }
+            set { SetProperty(ref _cleaningTasks, value); }
+        }
+		#endregion
+
+		#region Commands
+		public DelegateCommand RefreshCommand { get; set; }
+
+        public DelegateCommand ShowCalendarCommand { get; set; }
+
+        public DelegateCommand HideCalendarCommand { get; set; }
+        #endregion
+
+        /// <summary>
+        /// Constructs <see cref="CleaningListViewModel"/>
+        /// </summary>
+        /// <param name="dialogService">Instance of <see cref="IDialogService"/></param>
+        /// <param name="navigationService">Instance of <see cref="INavigationService"/></param>
+        /// <param name="eventAggregator">Instance of <see cref="IEventAggregator"/></param>
+        /// <param name="cleaningListDataService">Instance of <see cref="IDataFetchService"/> of type <see cref="CleaningListJobItem"/></param>
+        public CleaningListViewModel( 
             IDialogService dialogService, 
             INavigationService navigationService,
             IEventAggregator eventAggregator,
-            IDataService<CleaningListJobItem> cleaningListDataService)
+            IDataFetchService<CleaningListJobItem> cleaningListDataService)
         {
             _dialogService = dialogService;
             _navigationService = navigationService;
@@ -104,6 +110,35 @@ namespace XFTest.ViewModels
             PopulateCleaningTaskList();
         }
 
+        #region Actions
+        /// <summary>
+        /// Responsible to populate data in to the collection which will be displayed in app.
+        /// </summary>
+        private void PopulateCleaningTaskList()
+        {
+            try
+            {
+                IsRefreshing = true;
+                source = _cleaningListDataService.FetchDataForEntityAsync().Result;
+                UserSelectedDate = DateTime.Now;
+                IsRefreshing = false;
+            }
+            catch (Exception ex)
+            {
+                CleaningTasks.Clear();
+                App.Current.MainPage.DisplayAlert(
+                    "Error",
+                    $@"An error occured while fetching data. Please contact your service administrator with below information. 
+                    -------------------------------------------------   
+                    {ex.Message}
+                    -------------------------------------------------",
+                    "OK");
+            }
+        }
+
+        /// <summary>
+        /// Responsible to filter out the data based on the selected date by user and display the filtered out data list.
+        /// </summary>
         private void ModifyListOnUserSelectedDate()
         {
             IsRefreshing = true;
@@ -112,11 +147,9 @@ namespace XFTest.ViewModels
             IsRefreshing = false;
         }
 
-        private void LoadDataAsObserverableCollection(IList<CleaningListJobItem> dataSource)
-        { 
-            
-        }
-
+        /// <summary>
+        /// Responsible to subscribe to the event which will be raised when user changes the date of interest
+        /// </summary>
         private void SubscribeToDateSelectedEvent()
         {
             SubscriptionToken subscriptionToken = _eventAggregator.
@@ -127,19 +160,32 @@ namespace XFTest.ViewModels
                                                             });
         }
 
+        /// <summary>
+        /// Responsible to manage logic to hide the calendar widget and display the header section
+        /// </summary>
 		private void HideCalendarCommandHandler()
 		{
             ShouldCalanderVisible = false;
             ShouldTitleSectionVisible = true;
         }
 
+        /// <summary>
+        /// Responsible to manage logic to display the calendar widget and hide the header section
+        /// </summary>
 		private void ShowCalendarCommandHandler()
 		{
             ShouldCalanderVisible = true;
             ShouldTitleSectionVisible = false;
         }
 
-		private void RefreshCommandHandler()
+        /// <summary>
+        /// Respoisble to manage logic to handle refresh activity of user and re-populate data.
+        /// </summary>
+        /**
+         * Refresh command handling logic is based on the elegant solution provided at
+         * https://devblogs.microsoft.com/xamarin/refreshview-xamarin-forms/
+         */
+        private void RefreshCommandHandler()
 		{
             if (IsRefreshing)
             {
@@ -159,35 +205,15 @@ namespace XFTest.ViewModels
                 DistanceInformation = "Dummy km",
                 JobDescription = "Dummy Work",
                 JobStatus = "Dummy",
-                JobBackgroundColor = "#FF6347"
+                JobBackgroundColor = "#FF6347",
+                JobStartTime = DateTime.Now
             };
 
             source.Add(dummyJobItem);
-            CleaningTasks = new ObservableCollection<CleaningListJobItem>(source);
+            ModifyListOnUserSelectedDate();
 
             IsRefreshing = false;
         }
-
-		void PopulateCleaningTaskList()
-        {
-			try
-			{
-                IsRefreshing = true;
-                source = _cleaningListDataService.FetchDataForEntityAsync().Result;
-                UserSelectedDate = DateTime.Now;
-                IsRefreshing = false;
-            }
-			catch (Exception ex)
-			{
-                CleaningTasks.Clear();
-                App.Current.MainPage.DisplayAlert(
-                    "Error", 
-                    $@"An error occured while fetching data. Please contact your service administrator with below information. 
-                    -------------------------------------------------   
-                    {ex.Message}
-                    -------------------------------------------------", 
-                    "OK");
-            }
-        }
-    }
+		#endregion
+	}
 }

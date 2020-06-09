@@ -1,15 +1,15 @@
 ﻿using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace XFTest.Dtos
 {
-    /**
-     * Class was generated using service provided from https://app.quicktype.io/?l=csharp 
-     * based on the provided JSON.
-     * */
-    public class CarFitTaskDto
+	/// <summary>
+	/// Depicts the data structure which will hold the Car Wash Job Item from a server response.
+	/// 
+	/// Class was generated using service provided from https://app.quicktype.io/?l=csharp 
+	/// based on the provided JSON. Some types are changed for convenience.
+	/// </summary>
+	public class CarFitTaskDto
 	{
         [JsonProperty("taskId")]
         public Guid TaskId { get; set; }

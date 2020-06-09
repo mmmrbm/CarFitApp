@@ -1,5 +1,4 @@
 ﻿using Newtonsoft.Json;
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
@@ -9,12 +8,19 @@ using XFTest.Views;
 
 namespace XFTest.DataServices
 {
+	/// <summary>
+	/// Entity responsible to manage data services for <see cref="CarFitClientDto"/>
+	/// </summary>
 	/**
 	 * Class is marked as internal. All invocations should be handled via <see cref="CleaningListDataService"/>
 	 * Data reads can use complex and low level methods. Idea is to hide the complexity via a mediator.
 	 */
-	internal class CarFitClientDataService : IDataService<CarFitClientDto>
+	internal class CarFitClientDataService : IDataFetchService<CarFitClientDto>
 	{
+		/// <summary>
+		/// <inheritdoc/>
+		/// </summary>
+		/// 
 		/**
 		 * Below code is based on the solutions and information provided on below discussions.
 		 * https://stackoverflow.com/questions/60878223/xamarin-forms-read-local-json-file-and-display-in-picker

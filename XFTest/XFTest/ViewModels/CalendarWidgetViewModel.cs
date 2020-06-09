@@ -1,12 +1,8 @@
-﻿using ImTools;
-using Prism.AppModel;
-using Prism.Commands;
+﻿using Prism.Commands;
 using Prism.Events;
 using Prism.Mvvm;
 using Prism.Navigation;
-using Prism.Services.Dialogs;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
 using System.Text;
@@ -15,12 +11,15 @@ namespace XFTest.ViewModels
 {
 	public class CalendarWidgetViewModel : BindableBase, INotifyPropertyChanged
 	{
+		#region Private members
 		private INavigationService _navigationService;
 
 		private IEventAggregator _eventAggregator;
 
 		private static string _carriageReturn = "\r\n";
+		#endregion
 
+		#region Properties
 		private DateTime _selectedDateOfInterest;
 
 		public DateTime SelectedDateOfInterest
@@ -193,12 +192,19 @@ namespace XFTest.ViewModels
 			get { return _daySevenButtonColor; }
 			set { SetProperty(ref _daySevenButtonColor, value); }
 		}
+		#endregion
 
-
+		#region Commands
 		public DelegateCommand<string> DateSelectCommand { get; set; }
 		public DelegateCommand MoveWeekBackwardCommand { get; set; }
 		public DelegateCommand MoveWeekForwardCommand { get; set; }
+		#endregion
 
+		/// <summary>
+		/// Constructs <see cref="CalendarWidgetViewModel"/>
+		/// </summary>
+		/// <param name="navigationService">Instance of <see cref="INavigationService"/></param>
+		/// <param name="eventAggregator">Instance of <see cref="IEventAggregator"/></param>
 		public CalendarWidgetViewModel(
 			INavigationService navigationService,
 			IEventAggregator eventAggregator)
@@ -215,6 +221,10 @@ namespace XFTest.ViewModels
 			SetupDateInformation();
 		}
 
+		#region Methods
+		/// <summary>
+		/// Responsible to set up the date related information in the calendar.
+		/// </summary>
 		private void SetupDateInformation()
 		{
 			Year = DateOfSelectedOffsetWeek.Year.ToString();
@@ -237,6 +247,12 @@ namespace XFTest.ViewModels
 			SetupDateSelectorColors();
 		}
 
+		/// <summary>
+		/// Responsible to build the day information content.
+		/// </summary>
+		/// <param name="startDateOfSelectedWeek">Start day of the week selected by user</param>
+		/// <param name="forwardDates">Offset of the dates</param>
+		/// <returns></returns>
 		private string BuildDayInfo(DateTime startDateOfSelectedWeek, int forwardDates)
 		{
 			StringBuilder dayInfo = new StringBuilder(startDateOfSelectedWeek.AddDays(forwardDates).Day.ToString());
@@ -245,12 +261,18 @@ namespace XFTest.ViewModels
 			return dayInfo.ToString();
 		}
 
+		/// <summary>
+		/// Responsible setup the color scehemes for date information holders
+		/// </summary>
 		private void SetupDateSelectorColors()
 		{
 			SetupDateSelectorDefaulColor();
 			SetupDateSelectedColor((int)(SelectedDateOfInterest.DayOfWeek - 1));
 		}
 
+		/// <summary>
+		/// Responsible to set up the default color scheme for date information holders
+		/// </summary>
 		private void SetupDateSelectorDefaulColor()
 		{
 			DayOneButtonColor = "#25A87B";
@@ -262,6 +284,9 @@ namespace XFTest.ViewModels
 			DaySevenButtonColor = "#25A87B";
 		}
 
+		/// <summary>
+		/// Responsible to set up the color scheme for user selected date holder
+		/// </summary>
 		private void SetupDateSelectedColor(int index)
 		{
 			if (index == 0)
@@ -294,6 +319,9 @@ namespace XFTest.ViewModels
 			}
 		}
 
+		/// <summary>
+		/// Command handler to handle the action of user moving forward a week
+		/// </summary>
 		private void MoveWeekForwardCommandHandler()
 		{
 			DateOfSelectedOffsetWeek = DateOfSelectedOffsetWeek.AddDays(+7);
@@ -309,6 +337,9 @@ namespace XFTest.ViewModels
 			}
 		}
 
+		/// <summary>
+		/// Command handler to handle the action of user moving backward a week
+		/// </summary>
 		private void MoveWeekBackwardCommandHandler()
 		{
 			DateOfSelectedOffsetWeek = DateOfSelectedOffsetWeek.AddDays(-7);
@@ -324,6 +355,10 @@ namespace XFTest.ViewModels
 			}
 		}
 
+		/// <summary>
+		/// Responsible to compare the week containing user selected day against the current week displayed in app
+		/// </summary>
+		/// <returns>A boolean flag of the comparison</returns>
 		private bool CheckUserSelectedWeekAgainstOffsetDayWeek()
 		{
 			CultureInfo ciCurr = CultureInfo.CurrentCulture;
@@ -333,10 +368,15 @@ namespace XFTest.ViewModels
 			return userSelectedDayWeek == selectedOffsetDayWeek;
 		}
 
+		/// <summary>
+		/// Command handler to handle the action of user selecting a week
+		/// </summary>
+		/// <param name="index">The index which will passed from UI to indicate the button pressed by user</param>
 		private void DateSelectCommandHandler(string index)
 		{
 			SelectedDateOfInterest = WeekStartDate.AddDays(int.Parse(index));
 			SetupDateSelectorColors();
 		}
+		#endregion
 	}
 }

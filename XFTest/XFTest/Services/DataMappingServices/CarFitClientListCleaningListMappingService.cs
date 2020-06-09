@@ -1,26 +1,38 @@
 ﻿using System.Collections.Generic;
-using System.Text.RegularExpressions;
 using XFTest.Dtos;
 using XFTest.Models;
 using XFTest.Util;
 
 namespace XFTest.Services.DataMappingServices
 {
+	/// <summary>
+	/// Concrenet implementation of <see cref="IEntityListMappingService"> interface to convert
+	/// a list of <see cref="CarFitClientDto"> to a list of <see cref="CleaningListJobItem">.
+	/// </summary>
 	public class CarFitClientListCleaningListMappingService : IEntityListMappingService<CarFitClientDto, CleaningListJobItem>
 	{
-		private DataConvertHelper _dataConvertHelper;
+		private CarFitClientCleaningListJobItemDataConvertHelper _dataConvertHelper;
 
+		/// <summary>
+		/// Constructs <see cref="CarFitClientListCleaningListMappingService">
+		/// </summary>
+		/// <param name="dataConvertHelper">Helper class which holds logic of entity conversion.</param>
 		public CarFitClientListCleaningListMappingService(
-			DataConvertHelper dataConvertHelper)
+			CarFitClientCleaningListJobItemDataConvertHelper dataConvertHelper)
 		{
 			_dataConvertHelper = dataConvertHelper;
 		}
+
 
 		/**
 		 * These mapping operations can be done using nuget packages like https://www.nuget.org/packages/automapper/.
 		 * But, as per this link https://mallibone.com/post/xamarin-automapper it introduce some problems in iOS project.
 		 * Thus, did this manually for this excercise.
 		 */
+
+		/// <summary>
+		/// <inheritdoc/>
+		/// </summary>
 		public List<CleaningListJobItem> MapSourceToTarget(List<CarFitClientDto> inputData)
 		{
 			List<CleaningListJobItem> cleaningTaskList = new List<CleaningListJobItem>();
@@ -53,7 +65,11 @@ namespace XFTest.Services.DataMappingServices
 			return cleaningTaskList;
 		}
 
-		
+		/// <summary>
+		/// Responsible to populate the fields which requires calculations based on basic or raw data.
+		/// </summary>
+		/// <param name="inputList">The entity list populated only with basic or raw data</param>
+		/// <returns></returns>
 		private List<CleaningListJobItem> PostProcessDataList(List<CleaningListJobItem> inputList)
 		{
 			for (int i = 0; i < inputList.Count; i++)

@@ -1,15 +1,16 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace XFTest.Dtos
 {
-    /**
-     * Class was generated using service provided from https://app.quicktype.io/?l=csharp 
-     * based on the provided JSON.
-     * */
-    public class CarFitClientDto
+	/// <summary>
+	/// Depicts the data structure which will hold the Client information from a server response.
+	/// 
+	/// Class was generated using service provided from https://app.quicktype.io/?l=csharp 
+	/// based on the provided JSON. Some types are changed for convenience.
+	/// </summary>
+	public class CarFitClientDto
 	{
         [JsonProperty("visitId")]
         public Guid VisitId { get; set; }

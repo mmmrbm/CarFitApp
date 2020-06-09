@@ -1,15 +1,15 @@
 ﻿using Newtonsoft.Json;
-using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace XFTest.Dtos
 {
-    /**
-     * Class was generated using service provided from https://app.quicktype.io/?l=csharp 
-     * based on the provided JSON.
-     * */
-    public class CarFitResponseDto
+	/// <summary>
+	/// Depicts the data structure of a server response from CarFit application.
+	/// 
+	/// Class was generated using service provided from https://app.quicktype.io/?l=csharp 
+	/// based on the provided JSON. Some types are changed for convenience.
+	/// </summary>
+	public class CarFitResponseDto
 	{
         [JsonProperty("success")]
         public bool Success { get; set; }
