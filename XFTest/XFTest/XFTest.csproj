@@ -30,6 +30,9 @@
     <EmbeddedResource Update="Views\Calendar.xaml">
       <Generator>MSBuild:Compile</Generator>
     </EmbeddedResource>
+    <EmbeddedResource Update="Views\CalendarWidget.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
     <EmbeddedResource Update="Views\CleaningList.xaml">
       <Generator>MSBuild:Compile</Generator>
     </EmbeddedResource>

@@ -8,6 +8,8 @@ using Prism.Services.Dialogs;
 using XFTest.DataServices;
 using Prism.Commands;
 using System;
+using XFTest.Views;
+using Xamarin.Forms;
 
 namespace XFTest.ViewModels
 {
@@ -16,6 +18,10 @@ namespace XFTest.ViewModels
         private IList<CleaningListJobItem> source;
 
         private IDataService<CleaningListJobItem> _cleaningListDataService;
+
+        private IDialogService _dialogService;
+
+        private INavigationService _navigationService;
 
         private ObservableCollection<CleaningListJobItem> _cleaningTasks;
 
@@ -31,6 +37,10 @@ namespace XFTest.ViewModels
          */
         public DelegateCommand RefreshCommand { get; set; }
 
+        public DelegateCommand ShowCalendarCommand { get; set; }
+
+        public DelegateCommand HideCalendarCommand { get; set; }
+
         private bool _isRefreshing;
 
         public bool IsRefreshing
@@ -39,15 +49,52 @@ namespace XFTest.ViewModels
             set { SetProperty(ref _isRefreshing, value); }
         }
 
+        private bool _shouldCalanderVisible;
+
+        public bool ShouldCalanderVisible
+        {
+            get { return _shouldCalanderVisible; }
+            set { SetProperty(ref _shouldCalanderVisible, value); }
+        }
+
+        private bool _shouldTitleSectionVisible;
+
+        public bool ShouldTitleSectionVisible
+        {
+            get { return _shouldTitleSectionVisible; }
+            set { SetProperty(ref _shouldTitleSectionVisible, value); }
+        }
+
+
+
         public CleaningListViewModel( 
             IDialogService dialogService, 
             INavigationService navigationService,
             IDataService<CleaningListJobItem> cleaningListDataService)
         {
+            _dialogService = dialogService;
+            _navigationService = navigationService;
             _cleaningListDataService = cleaningListDataService;
+
             RefreshCommand = new DelegateCommand(RefreshCommandHandler);
+            ShowCalendarCommand = new DelegateCommand(ShowCalendarCommandHandler);
+            HideCalendarCommand = new DelegateCommand(HideCalendarCommandHandler);
+
+            ShouldTitleSectionVisible = true;
 
             PopulateCleaningTaskList();
+        }
+
+		private void HideCalendarCommandHandler()
+		{
+            ShouldCalanderVisible = false;
+            ShouldTitleSectionVisible = true;
+        }
+
+		private void ShowCalendarCommandHandler()
+		{
+            ShouldCalanderVisible = true;
+            ShouldTitleSectionVisible = false;
         }
 
 		private void RefreshCommandHandler()
@@ -81,10 +128,24 @@ namespace XFTest.ViewModels
 
 		void PopulateCleaningTaskList()
         {
-            IsRefreshing = true;
-            source = _cleaningListDataService.FetchDataForEntityAsync().Result;
-            CleaningTasks = new ObservableCollection<CleaningListJobItem>(source);
-            IsRefreshing = false;
+			try
+			{
+                IsRefreshing = true;
+                source = _cleaningListDataService.FetchDataForEntityAsync().Result;
+                CleaningTasks = new ObservableCollection<CleaningListJobItem>(source);
+                IsRefreshing = false;
+            }
+			catch (Exception ex)
+			{
+                CleaningTasks.Clear();
+                App.Current.MainPage.DisplayAlert(
+                    "Error", 
+                    $@"An error occured while fetching data. Please contact your service administrator with below information. 
+                    -------------------------------------------------   
+                    {ex.Message}
+                    -------------------------------------------------", 
+                    "OK");
+            }
         }
     }
 }

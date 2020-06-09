@@ -9,6 +9,7 @@ using XFTest.Dtos;
 using XFTest.Services.DataMappingServices;
 using XFTest.Services.LocationServices;
 using XFTest.Util;
+using Prism.Plugin.Popups;
 
 [assembly: XamlCompilation(XamlCompilationOptions.Compile)]
 namespace XFTest
@@ -35,6 +36,7 @@ namespace XFTest
         {
             containerRegistry.RegisterForNavigation<NavigationPage>();
             containerRegistry.RegisterForNavigation<MainPage, MainPageViewModel>();
+            containerRegistry.RegisterForNavigation<Calendar, CalendarWidgetViewModel>();
 
             containerRegistry.Register<IDataService<XFTest.Models.CleaningListJobItem>, CleaningListDataService>();
             containerRegistry.Register<IDataService<CarFitClientDto>, CarFitClientDataService>();

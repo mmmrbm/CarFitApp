@@ -1,0 +1,198 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<ContentView xmlns="http://xamarin.com/schemas/2014/forms" 
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             xmlns:views="clr-namespace:XFTest.Views"
+             x:Class="XFTest.Views.CalendarWidget"
+             xmlns:prism="http://prismlibrary.com"
+             prism:ViewModelLocator.AutowireViewModel="True"
+             xmlns:ffimageloadingsvg="clr-namespace:FFImageLoading.Svg.Forms;assembly=FFImageLoading.Svg.Forms" >
+  <ContentView.Content>
+		<StackLayout BackgroundColor="#25A87B"
+					 Margin="{OnPlatform iOS='0,0,0,30', Android='0,0,0,30'}">
+			<Grid Padding="0">
+				<Grid.RowDefinitions>
+					<RowDefinition Height="1*" />
+					<RowDefinition Height="1.5*" />
+				</Grid.RowDefinitions>
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="1*" />
+					<ColumnDefinition Width="1*" />
+					<ColumnDefinition Width="1*" />
+					<ColumnDefinition Width="1*" />
+					<ColumnDefinition Width="1*" />
+					<ColumnDefinition Width="1*" />
+					<ColumnDefinition Width="1*" />
+				</Grid.ColumnDefinitions>
+
+				<ffimageloadingsvg:SvgCachedImage 
+									Margin="{OnPlatform iOS='0,20,0,10', Android='0,10,0,10'}" 
+                                    Source="Arrow_Left.svg" 
+                                    WidthRequest="15" 
+                                    Grid.Row="0" 
+									Grid.Column="0"
+                                    HorizontalOptions="Center"
+			                        >
+					<ffimageloadingsvg:SvgCachedImage.GestureRecognizers>
+						<TapGestureRecognizer  Command="{Binding MoveWeekBackwardCommand}"  
+											   NumberOfTapsRequired="1">
+						</TapGestureRecognizer>
+					</ffimageloadingsvg:SvgCachedImage.GestureRecognizers>
+				</ffimageloadingsvg:SvgCachedImage>
+				<Label 
+									Text="{Binding Year}" 
+									Grid.Column="1" 
+									Grid.ColumnSpan="2"
+									HorizontalTextAlignment="End" 
+									VerticalTextAlignment="Center"
+									Font="Bold,20"
+									FontFamily="{StaticResource BoldFont}"
+									TextColor="{StaticResource ColorBluishGrey}"
+									Style="{StaticResource CalDateText}"
+									HorizontalOptions="CenterAndExpand">
+				</Label>
+
+				<Label
+									Text="/" 
+									Grid.Column="3" 
+									Grid.ColumnSpan="1"
+									HorizontalTextAlignment="Center" 
+									VerticalTextAlignment="Center"
+									Font="Bold,20"
+									FontFamily="{StaticResource BoldFont}"
+									TextColor="{StaticResource ColorBluishGrey}"
+									Style="{StaticResource CalDateText}"
+									HorizontalOptions="CenterAndExpand">
+				</Label>
+
+				<Label 
+									Text="{Binding Month}" 
+									Grid.Column="4" 
+									Grid.ColumnSpan="2"
+									HorizontalTextAlignment="Start" 
+									VerticalTextAlignment="Center"
+									Font="Bold,20"
+									FontFamily="{StaticResource BoldFont}"
+									TextColor="{StaticResource ColorBluishGrey}"
+									Style="{StaticResource CalDateText}"
+									HorizontalOptions="CenterAndExpand">
+				</Label>
+
+				<ffimageloadingsvg:SvgCachedImage 
+									Margin="{OnPlatform iOS='0,20,0,10', Android='0,10,0,10'}" 
+                                    Source="Arrow_Right.svg" 
+                                    WidthRequest="15" 
+                                    Grid.Row="0" 
+									Grid.Column="6"
+                                    HorizontalOptions="Center"
+			                    >
+					<ffimageloadingsvg:SvgCachedImage.GestureRecognizers>
+						<TapGestureRecognizer  Command="{Binding MoveWeekForwardCommand}"  
+											   NumberOfTapsRequired="1">
+						</TapGestureRecognizer>
+					</ffimageloadingsvg:SvgCachedImage.GestureRecognizers>
+				</ffimageloadingsvg:SvgCachedImage>
+
+				<Button Margin="3,0,0,5" 
+						BorderWidth="1" 
+						BorderColor="White" 
+						CornerRadius="10"
+						BackgroundColor="{Binding DayOneButtonColor}" 
+						TextColor="White" 
+						Grid.Row="1" 
+						Grid.Column="0" 
+						Text="{Binding DayOneInfo}" 
+						Font="Bold, 12"
+						Command="{Binding DateSelectCommand}"
+						CommandParameter="0">
+				</Button>
+
+				<Button Margin="3,0,0,5" 
+						BorderWidth="1" 
+						BorderColor="White" 
+						CornerRadius="10"
+						BackgroundColor="{Binding DayTwoButtonColor}" 
+						TextColor="White" 
+						Grid.Row="1" 
+						Grid.Column="1" 
+						Text="{Binding DayTwoInfo}" 
+						Font="Bold, 12"
+						Command="{Binding DateSelectCommand}"
+						CommandParameter="1">
+				</Button>
+
+				<Button Margin="3,0,0,5" 
+						BorderWidth="1" 
+						BorderColor="White" 
+						CornerRadius="10"
+						BackgroundColor="{Binding DayThreeButtonColor}" 
+						TextColor="White" 
+						Grid.Row="1" 
+						Grid.Column="2" 
+						Text="{Binding DayThreeInfo}" 
+						Font="Bold, 12"
+						Command="{Binding DateSelectCommand}"
+						CommandParameter="2">
+				</Button>
+
+				<Button Margin="3,0,0,5" 
+						BorderWidth="1" 
+						BorderColor="White" 
+						CornerRadius="10"
+						BackgroundColor="{Binding DayFourButtonColor}" 
+						TextColor="White" 
+						Grid.Row="1" 
+						Grid.Column="3" 
+						Text="{Binding DayFourInfo}" 
+						Font="Bold, 12"
+						Command="{Binding DateSelectCommand}"
+						CommandParameter="3">
+				</Button>
+
+				<Button Margin="3,0,0,5" 
+						BorderWidth="1" 
+						BorderColor="White" 
+						CornerRadius="10"
+						BackgroundColor="{Binding DayFiveButtonColor}" 
+						TextColor="White" 
+						Grid.Row="1" 
+						Grid.Column="4" 
+						Text="{Binding DayFiveInfo}" 
+						Font="Bold, 12"
+						Command="{Binding DateSelectCommand}"
+						CommandParameter="4">
+				</Button>
+
+				<Button Margin="3,0,0,5" 
+						BorderWidth="1" 
+						BorderColor="White" 
+						CornerRadius="10"
+						BackgroundColor="{Binding DaySixButtonColor}" 
+						TextColor="White" 
+						Grid.Row="1" 
+						Grid.Column="5" 
+						Text="{Binding DaySixInfo}" 
+						Font="Bold, 12"
+						Command="{Binding DateSelectCommand}"
+						CommandParameter="5">
+				</Button>
+
+				<Button Margin="3,0,0,5" 
+						BorderWidth="1" 
+						BorderColor="White" 
+						CornerRadius="10"
+						BackgroundColor="{Binding DaySevenButtonColor}" 
+						TextColor="White" 
+						Grid.Row="1" 
+						Grid.Column="6" 
+						Text="{Binding DaySevenInfo}" 
+						Font="Bold, 12"
+						Command="{Binding DateSelectCommand}"
+						CommandParameter="6">
+				</Button>
+			</Grid>
+		</StackLayout>
+  </ContentView.Content>
+</ContentView>
