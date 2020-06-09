@@ -10,6 +10,8 @@ using Prism.Commands;
 using System;
 using XFTest.Views;
 using Xamarin.Forms;
+using Prism.Events;
+using System.Linq;
 
 namespace XFTest.ViewModels
 {
@@ -22,6 +24,8 @@ namespace XFTest.ViewModels
         private IDialogService _dialogService;
 
         private INavigationService _navigationService;
+
+        private IEventAggregator _eventAggregator;
 
         private ObservableCollection<CleaningListJobItem> _cleaningTasks;
 
@@ -65,15 +69,29 @@ namespace XFTest.ViewModels
             set { SetProperty(ref _shouldTitleSectionVisible, value); }
         }
 
+		private DateTime _userSelectedDate;
+
+		public DateTime UserSelectedDate
+        {
+			get { return _userSelectedDate; }
+			set 
+            { 
+                SetProperty(ref _userSelectedDate, value);
+                ModifyListOnUserSelectedDate();
+            }
+		}
 
 
-        public CleaningListViewModel( 
+		public CleaningListViewModel( 
             IDialogService dialogService, 
             INavigationService navigationService,
+            IEventAggregator eventAggregator,
             IDataService<CleaningListJobItem> cleaningListDataService)
         {
             _dialogService = dialogService;
             _navigationService = navigationService;
+            _eventAggregator = eventAggregator;
+
             _cleaningListDataService = cleaningListDataService;
 
             RefreshCommand = new DelegateCommand(RefreshCommandHandler);
@@ -82,7 +100,31 @@ namespace XFTest.ViewModels
 
             ShouldTitleSectionVisible = true;
 
+            SubscribeToDateSelectedEvent();
             PopulateCleaningTaskList();
+        }
+
+        private void ModifyListOnUserSelectedDate()
+        {
+            IsRefreshing = true;
+            var filteredDataSource =  source.Where(jobItem => jobItem.JobStartTime.Date.ToShortDateString().Equals(UserSelectedDate.Date.ToShortDateString())).ToList();
+            CleaningTasks = new ObservableCollection<CleaningListJobItem>(filteredDataSource);
+            IsRefreshing = false;
+        }
+
+        private void LoadDataAsObserverableCollection(IList<CleaningListJobItem> dataSource)
+        { 
+            
+        }
+
+        private void SubscribeToDateSelectedEvent()
+        {
+            SubscriptionToken subscriptionToken = _eventAggregator.
+                                                        GetEvent<PubSubEvent<DateTime>>().
+                                                        Subscribe((details) =>
+                                                            {
+                                                                this.UserSelectedDate = details;
+                                                            });
         }
 
 		private void HideCalendarCommandHandler()
@@ -132,7 +174,7 @@ namespace XFTest.ViewModels
 			{
                 IsRefreshing = true;
                 source = _cleaningListDataService.FetchDataForEntityAsync().Result;
-                CleaningTasks = new ObservableCollection<CleaningListJobItem>(source);
+                UserSelectedDate = DateTime.Now;
                 IsRefreshing = false;
             }
 			catch (Exception ex)

@@ -70,14 +70,22 @@ namespace XFTest.Services.DataMappingServices
 				{
 					CleaningListJobItem previousJob = inputList[i - 1];
 
-					currentJob.DistanceInformation = _dataConvertHelper.BuildDistanceInfo(_dataConvertHelper.CalculateDistance(
+					if (currentJob.JobStartTime.ToShortDateString().Equals(previousJob.JobStartTime.ToShortDateString()))
+					{
+						currentJob.DistanceInformation = _dataConvertHelper.BuildDistanceInfo(_dataConvertHelper.CalculateDistance(
 						currentJob.ClientLocationLatitude,
 						currentJob.ClientLocationLongitude,
 						previousJob.ClientLocationLatitude,
 						previousJob.ClientLocationLongitude));
 
-					currentJob.JobStartTime = previousJob.JobStartTime.AddMinutes(previousJob.ExpectedTimeAllocatedForJob);
-					currentJob.TimeInformationOnJob = _dataConvertHelper.BuildTimeInformation(currentJob.JobStartTime, currentJob.ExpectedTimeSlotOfAvailablity);
+						currentJob.JobStartTime = previousJob.JobStartTime.AddMinutes(previousJob.ExpectedTimeAllocatedForJob);
+						currentJob.TimeInformationOnJob = _dataConvertHelper.BuildTimeInformation(currentJob.JobStartTime, currentJob.ExpectedTimeSlotOfAvailablity);
+					}
+					else 
+					{
+						currentJob.DistanceInformation = _dataConvertHelper.BuildDistanceInfo(0);
+						currentJob.TimeInformationOnJob = _dataConvertHelper.BuildTimeInformation(currentJob.JobStartTime, currentJob.ExpectedTimeSlotOfAvailablity);
+					}
 				}
 
 				// To add space after the cap in the status. Length of InProgress job status was too long for the UI element, thus removed

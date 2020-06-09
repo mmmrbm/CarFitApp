@@ -1,6 +1,7 @@
 ﻿using ImTools;
 using Prism.AppModel;
 using Prism.Commands;
+using Prism.Events;
 using Prism.Mvvm;
 using Prism.Navigation;
 using Prism.Services.Dialogs;
@@ -16,6 +17,8 @@ namespace XFTest.ViewModels
 	{
 		private INavigationService _navigationService;
 
+		private IEventAggregator _eventAggregator;
+
 		private static string _carriageReturn = "\r\n";
 
 		private DateTime _selectedDateOfInterest;
@@ -23,7 +26,11 @@ namespace XFTest.ViewModels
 		public DateTime SelectedDateOfInterest
 		{
 			get { return _selectedDateOfInterest; }
-			set { SetProperty(ref _selectedDateOfInterest, value); }
+			set 
+			{ 
+				SetProperty(ref _selectedDateOfInterest, value);
+				this._eventAggregator.GetEvent<PubSubEvent<DateTime>>().Publish(this.SelectedDateOfInterest);
+			}
 		}
 
 		private DateTime _dateOfSelectedOffsetWeek;
@@ -193,9 +200,12 @@ namespace XFTest.ViewModels
 		public DelegateCommand MoveWeekForwardCommand { get; set; }
 
 		public CalendarWidgetViewModel(
-			INavigationService navigationService)
+			INavigationService navigationService,
+			IEventAggregator eventAggregator)
 		{
 			_navigationService = navigationService;
+			_eventAggregator = eventAggregator;
+
 			DateSelectCommand = new DelegateCommand<string>(DateSelectCommandHandler);
 			MoveWeekBackwardCommand = new DelegateCommand(MoveWeekBackwardCommandHandler);
 			MoveWeekForwardCommand = new DelegateCommand(MoveWeekForwardCommandHandler);
@@ -326,7 +336,6 @@ namespace XFTest.ViewModels
 		private void DateSelectCommandHandler(string index)
 		{
 			SelectedDateOfInterest = WeekStartDate.AddDays(int.Parse(index));
-			App.Current.MainPage.DisplayAlert("Info", $"Clicked {index}", "OK");
 			SetupDateSelectorColors();
 		}
 	}
