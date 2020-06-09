@@ -69,7 +69,7 @@ namespace XFTest.ViewModels
 		#endregion
 
 		#region Commands
-		public DelegateCommand DateSelectCommand { get; set; }
+		public DelegateCommand<CalendarWidgetDate> DateSelectCommand { get; set; }
 		public DelegateCommand MoveWeekBackwardCommand { get; set; }
 		public DelegateCommand MoveWeekForwardCommand { get; set; }
 		#endregion
@@ -85,7 +85,7 @@ namespace XFTest.ViewModels
 
 			MoveWeekBackwardCommand = new DelegateCommand(MoveWeekBackwardCommandHandler);
 			MoveWeekForwardCommand = new DelegateCommand(MoveWeekForwardCommandHandler);
-			DateSelectCommand = new DelegateCommand(DateSelectCommandHandler);
+			DateSelectCommand = new DelegateCommand<CalendarWidgetDate>(DateSelectCommandHandler);
 
 			IndicatorDateOfMonth = DateTime.Now;
 			SelectedDateOfInterest = DateTime.Now;
@@ -97,10 +97,10 @@ namespace XFTest.ViewModels
 		/// Responsible to handle the logic to be executed when user selects a date
 		/// </summary>
 		/// <param name="selectedDateInfo">Selected <see cref="CalendarWidgetDate"/> object</param>
-		private void DateSelectCommandHandler()
+		private void DateSelectCommandHandler(CalendarWidgetDate selectedDateItem)
 		{
-			//SelectedDateOfInterest = selectedDateInfo.DateTimeData;
-			Console.WriteLine("Test");
+			SelectedDateOfInterest = selectedDateItem.DateTimeData;
+			SetupUiDateInfo();
 		}
 
 		/// <summary>

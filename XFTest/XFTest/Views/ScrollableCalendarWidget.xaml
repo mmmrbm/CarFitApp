@@ -11,7 +11,7 @@
              xmlns:ffimageloadingsvg="clr-namespace:FFImageLoading.Svg.Forms;assembly=FFImageLoading.Svg.Forms"
 			 xmlns:yummy="clr-namespace:Xamarin.Forms.PancakeView;assembly=Xamarin.Forms.PancakeView" >
   <ContentView.Content>
-		<StackLayout>
+		<StackLayout VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand">
 
 			<Label Text="Refreshing data..." IsVisible="{Binding IsDateRefreshing}"/>
 
@@ -69,12 +69,6 @@
 					<StackLayout Orientation="Horizontal"
 								 BackgroundColor="Transparent"
 								 BindableLayout.ItemsSource="{Binding DateList}">
-
-						<StackLayout.GestureRecognizers>
-							<TapGestureRecognizer	Command="{Binding DateSelectCommand}"  
-																NumberOfTapsRequired="1"/>
-						</StackLayout.GestureRecognizers>
-
 						<BindableLayout.ItemTemplate>
 							<DataTemplate>
 								<StackLayout WidthRequest="30" 
@@ -82,9 +76,8 @@
 											 BackgroundColor="{Binding ColorCode}">
 
 									<StackLayout.GestureRecognizers>
-										<TapGestureRecognizer	Command="{Binding DateSelectCommand}"  
-																CommandParameter="{Binding .}"
-																NumberOfTapsRequired="1"/>
+										<ClickGestureRecognizer Command="{Binding DateSelectCommand}" CommandParameter="{Binding .}"/>
+										<TapGestureRecognizer Command="{Binding DateSelectCommand}" CommandParameter="{Binding .}"/>
 									</StackLayout.GestureRecognizers>
 
 									<Grid Style="{StaticResource CalDatePad}">
@@ -104,11 +97,6 @@
 													HeightRequest="35"
 													Padding="4,10,4,0"
 													Text="{Binding DateRepresentation}">
-												<Label.GestureRecognizers>
-													<TapGestureRecognizer	Command="{Binding DateSelectCommand}"  
-																CommandParameter="{Binding .}"
-																NumberOfTapsRequired="1"/>
-												</Label.GestureRecognizers>
 											</Label>
 										</yummy:PancakeView>
 
@@ -119,11 +107,6 @@
 												TextColor="{StaticResource ColorBluishGrey}" 
 												HorizontalOptions="CenterAndExpand"
 												Text="{Binding DayRepresentation}">
-											<Label.GestureRecognizers>
-												<TapGestureRecognizer	Command="{Binding DateSelectCommand}"  
-																CommandParameter="{Binding .}"
-																NumberOfTapsRequired="1"/>
-											</Label.GestureRecognizers>
 										</Label>
 									</Grid>
 								</StackLayout>

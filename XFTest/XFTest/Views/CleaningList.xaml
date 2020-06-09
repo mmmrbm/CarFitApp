@@ -53,8 +53,8 @@
 							 Margin="0,0,0,30"
 							 BackgroundColor="#25A87B"
 							 Grid.ColumnSpan="2">
-					<!--<views:CalendarWidget/> -->
-					<views:ScrollableCalendarWidget/>
+					<views:CalendarWidget/>
+					<!--<views:ScrollableCalendarWidget/>-->
 				</StackLayout>
 			</Grid>
 
