@@ -36,7 +36,6 @@ namespace XFTest
         {
             containerRegistry.RegisterForNavigation<NavigationPage>();
             containerRegistry.RegisterForNavigation<MainPage, MainPageViewModel>();
-            containerRegistry.RegisterForNavigation<Calendar, CalendarWidgetViewModel>();
 
             containerRegistry.Register<IDataFetchService<XFTest.Models.CleaningListJobItem>, CleaningListDataService>();
             containerRegistry.Register<IDataFetchService<CarFitClientDto>, CarFitClientDataService>();
