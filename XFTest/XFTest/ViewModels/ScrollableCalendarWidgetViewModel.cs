@@ -7,7 +7,9 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Globalization;
+using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using XFTest.Models;
 
 namespace XFTest.ViewModels
@@ -21,7 +23,6 @@ namespace XFTest.ViewModels
 		#endregion
 
 		#region Properties
-
 		private Boolean _isDateRefreshing;
 
 		public Boolean IsDateRefreshing
@@ -58,7 +59,6 @@ namespace XFTest.ViewModels
 			set { SetProperty(ref _indicatorDateOfMonth, value); }
 		}
 
-
 		private ObservableCollection<CalendarWidgetDate> _dateList;
 
 		public ObservableCollection<CalendarWidgetDate> DateList
@@ -70,7 +70,9 @@ namespace XFTest.ViewModels
 
 		#region Commands
 		public DelegateCommand<CalendarWidgetDate> DateSelectCommand { get; set; }
+
 		public DelegateCommand MoveWeekBackwardCommand { get; set; }
+
 		public DelegateCommand MoveWeekForwardCommand { get; set; }
 		#endregion
 
@@ -99,6 +101,11 @@ namespace XFTest.ViewModels
 		/// <param name="selectedDateInfo">Selected <see cref="CalendarWidgetDate"/> object</param>
 		private void DateSelectCommandHandler(CalendarWidgetDate selectedDateItem)
 		{
+			if (selectedDateItem.DateTimeData == SelectedDateOfInterest)
+			{
+				return;
+			}
+
 			SelectedDateOfInterest = selectedDateItem.DateTimeData;
 			SetupUiDateInfo();
 		}
@@ -124,12 +131,23 @@ namespace XFTest.ViewModels
 		/// <summary>
 		/// Responsible to set up all data required for UI bindings
 		/// </summary>
-		private void SetupUiDateInfo()
+		private async void SetupUiDateInfo()
 		{
 			IsDateRefreshing = true;
-			BuildHeaderYearMonthInfo();
-			SetupDateListForMonth();
+			await SetupUiInfoAsync();
 			IsDateRefreshing = false;
+		}
+
+		/// <summary>
+		/// Responsible to setup UI elements of calendar in async manner
+		/// </summary>
+		/// <returns>The synchronous <see cref="Task"/></returns>
+		private async Task SetupUiInfoAsync()
+		{
+			await Task.Factory.StartNew(() => {
+				BuildHeaderYearMonthInfo();
+				SetupDateListForMonth();
+			});
 		}
 
 		/// <summary>
@@ -166,7 +184,7 @@ namespace XFTest.ViewModels
 
 				if (SelectedDateOfInterest.ToShortDateString().Equals(date.ToShortDateString()))
 				{
-					calendarWidgetDate.ColorCode = "#368268";
+					calendarWidgetDate.ColorCode = calendarWidgetDate.GetSelectedBgColorCode();
 				}
 
 				_dateInfoList.Add(calendarWidgetDate);
